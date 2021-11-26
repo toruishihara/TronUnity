@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class TronScript : MonoBehaviour
 {
     public int TronID;
@@ -15,13 +16,18 @@ public class TronScript : MonoBehaviour
 
         GetComponent<MeshRenderer>().material.color = new Color(TronID & 1, (TronID & 2) >> 1, (TronID & 4) >> 2, 1);
 
-        rb = GetComponent<Rigidbody>();
-        rb.velocity = new Vector3(Random.Range(-1 * v, v), Random.Range(-1 * v, v), Random.Range(-1 * v, v));
+        //rb = GetComponent<Rigidbody>();
+        //rb.velocity = new Vector3(Random.Range(-1 * v, v), Random.Range(-1 * v, v), Random.Range(-1 * v, v));
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        //Vector3 pos = this.transform.position;
+        //tuple t = new tuple(pos);
+        //t.Unify();
+        //this.transform.position = t.GetVector3();
     }
+
+    
 }

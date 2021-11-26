@@ -25,10 +25,13 @@ public class SphereScript : MonoBehaviour
             float angle = cnt * Mathf.PI * 2 / 10;
             float x = Mathf.Cos(angle) * 6;
             float z = Mathf.Sin(angle) * 6;
-            Vector3 pos = transform.position + new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f));
+            Vector3 pos = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+            TupleSph tuple = new TupleSph(pos);
+            tuple.Unify();
+
             float angleDegrees = -angle * Mathf.Rad2Deg;
             Quaternion rot = Quaternion.Euler(0, angleDegrees, 0);
-            GameObject obj = Instantiate(TronPrefab, pos, rot);
+            GameObject obj = Instantiate(TronPrefab, tuple.GetVector3(), rot);
             obj.GetComponent<TronScript>().TronID = cnt;
             lastCreation = t;
             cnt = cnt + 1;
