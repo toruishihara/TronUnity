@@ -6,8 +6,9 @@ using UnityEngine;
 public class TronScript : MonoBehaviour
 {
     public int TronID;
+    public Vector3 Coulomb;
     private Rigidbody rb;
-    float v = 0.1f;
+    //float v = 0.1f;
 
     // Start is called before the first frame update
     void Start()
@@ -23,10 +24,11 @@ public class TronScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Vector3 pos = this.transform.position;
-        //tuple t = new tuple(pos);
-        //t.Unify();
-        //this.transform.position = t.GetVector3();
+        Vector3 pos = this.transform.position;
+        pos += Coulomb;
+        TupleSph t = new TupleSph(pos);
+        t.Unify();
+        this.transform.position = t.GetVector3();
     }
 
     

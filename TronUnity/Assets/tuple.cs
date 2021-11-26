@@ -36,7 +36,7 @@ public class TupleSph
         {
             ph = Mathf.Acos(v.z / r);
         }
-        Debug.Log(string.Format("TupleSph xyz={0} {1} {2} sph={3} {4} {5}", v.x, v.y, v.z, r, th, ph));
+        //Debug.Log(string.Format("TupleSph xyz={0} {1} {2} sph={3} {4} {5}", v.x, v.y, v.z, r, th, ph));
     }
 
     public void SetXYZ(float x, float y, float z)
@@ -63,7 +63,7 @@ public class TupleSph
         float x = r * Mathf.Cos(th) * Mathf.Sin(ph);
         float y = r * Mathf.Sin(th) * Mathf.Sin(ph);
         float z = r * Mathf.Cos(ph);
-        Debug.Log(string.Format("GetVector3 xyz={0} {1} {2} sph={3} {4} {5}", x, y, z, r, th, ph));
+        //Debug.Log(string.Format("GetVector3 xyz={0} {1} {2} sph={3} {4} {5}", x, y, z, r, th, ph));
         return new Vector3(x, y, z);
     }
 
