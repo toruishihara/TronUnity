@@ -12,63 +12,70 @@ public class SphereScript : MonoBehaviour
     public Vector3 PoleY = new Vector3(0, 1f, 0);
     public Vector3 PoleZ = new Vector3(0, 0, 1f);
     public List<Vector3> PoleMoveList;// = new List<Vector3>();
+    public float FPS = 130f;
     private int poleMoveSteps;
     private int cnt;
-    private double lastCreation = 0;
-    private bool step1 = false;
-    private bool step2 = false;
-    private bool step3 = false;
+    private int lastCnt;
+    private int lastSec = 0;
+    private int tronCnt = 0;
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("Sph start");
-        Debug.DrawLine(Vector3.zero, PoleX, Color.red, 10f);
+        //Debug.DrawLine(Vector3.zero, PoleX, Color.red, 10f);
+        Debug.DrawLine(Vector3.zero, new Vector3(2f, 0, 0), Color.red, 10f);
         Debug.DrawLine(Vector3.zero, PoleY, Color.green, 10f);
         Debug.DrawLine(Vector3.zero, PoleZ, Color.blue, 10f);
 
-        Create8(true);
+        Create4(true);
     }
 
     // Update is called once per frame
     void Update()
     {
-        double t = Time.realtimeSinceStartup;
+        cnt++;
+        float t = Time.realtimeSinceStartup;
+        int sec = (int)t;
         if (poleMoveSteps > 0 && poleMoveSteps <= 20)
         {
-            MovePoleTo(PoleMoveList[poleMoveSteps-1]);
+            MovePoleTo(PoleMoveList[poleMoveSteps - 1]);
             poleMoveSteps++;
             if (poleMoveSteps == 21)
             {
                 ResetToPole();
             }
         }
-        
-        if (t < 30.0f)
+        if (sec > lastSec)
         {
-            Utils.UpdateCoulomb(TronList, CoulombK);
-        }
+            // Do event every sec
+            FPS = (cnt - lastCnt);
+            if (FPS < 1)
+            {
+                FPS = 130f;
+            }
+            if (sec % 10 == 0)
+            {
+                Debug.Log("Every 10 Sec cnt=" + cnt + " new FPS=" + FPS);
+            }
+            lastCnt = cnt;
+            if (sec % 20 == 0) {
+                // Do event every 20 sec
+                Debug.Log("Every 20 sec");
+                
+                Utils.drawTronLine(TronList);
+                Create1();
 
-        if (t > 30.0f && step1 == false)
-        {
-            step1 = true;
+                Vector3 newPos = Utils.FindFreeSpacePoint(TronList);
+                Debug.DrawLine(Vector3.zero, newPos, Color.black, 10f);
+                //SetPoleXMove(-1*newPos);
+            }
+        }
+        lastSec = sec;
 
-            Utils.drawTronLine(TronList);
-        }
-        if (t > 32.0f && step2 == false)
-        {
-            step2 = true;
-            Vector3 newPos = Utils.FindFreeSpacePoint(TronList);
-            Debug.DrawLine(Vector3.zero, newPos, Color.black, 10f);
-            SetPoleMove(newPos);
-        }
-        if (t > 40.0f && step3 == false)
-        {
-            step3 = true;
-            Utils.drawTronLine(TronList);
-        }
+        Utils.UpdateCoulomb(TronList, CoulombK);            
     }
 
-    void SetPoleMove(Vector3 p)
+    void SetPoleXMove(Vector3 p)
     {
         PoleMoveList = new List<Vector3>();
         TupleSph sph = new TupleSph(p);
@@ -78,16 +85,29 @@ public class SphereScript : MonoBehaviour
             sph1.ph = i * sph.ph / 20f;
             Vector3 p1 = sph1.GetVector3();
             PoleMoveList.Add(p1);
-            Debug.DrawLine(Vector3.zero, p, Color.gray, 100f);
+            Debug.DrawLine(Vector3.zero, p1, Color.gray, 1f);
         }
 
-        Debug.DrawLine(Vector3.zero, p, Color.black, 100f);
+        Debug.DrawLine(Vector3.zero, p, Color.black, 10f);
         poleMoveSteps = 1;
     }
 
-    void Create8(bool isRandom)
+    void Create1()
     {
-        for (int i = 0; i < 8; ++i)
+        Vector3 pos = new Vector3(-2f, 0, 0);
+
+        GameObject obj = Instantiate(TronPrefab, Vector3.zero, Quaternion.identity);
+        TronScript tron = obj.GetComponent<TronScript>();
+        tron.TronID = tronCnt++;
+        tron.Position = pos;
+        tron.isInside = false;
+        tron.LaunchForce = new Vector3(0.1f / FPS, 0, 0);
+        TronList.Add(obj);
+    }
+
+    void Create4(bool isRandom)
+    {
+        for (int i = 0; i < 4; ++i)
         {
             Vector3 pos;
             if (isRandom)
@@ -102,8 +122,10 @@ public class SphereScript : MonoBehaviour
             tuple.Unify();
 
             GameObject obj = Instantiate(TronPrefab, Vector3.zero, Quaternion.identity);
-            obj.GetComponent<TronScript>().TronID = i;
-            obj.GetComponent<TronScript>().Position = tuple.GetVector3();
+            TronScript tron = obj.GetComponent<TronScript>();
+            tron.TronID = tronCnt++;
+            tron.Position = tuple.GetVector3();
+            tron.isInside = true;
             TronList.Add(obj);
         }
     }

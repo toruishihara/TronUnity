@@ -10,6 +10,10 @@ public class Utils
         {
             TronScript tron0 = obj0.GetComponent<TronScript>();
             int i = tron0.TronID;
+            if (tron0.isInside == false)
+            {
+                continue;
+            }
             foreach (GameObject obj1 in tronList)
             {
                 TronScript tron1 = obj1.GetComponent<TronScript>();
@@ -18,7 +22,7 @@ public class Utils
                 {
                     continue;
                 }
-                Debug.DrawLine(tron0.GetDisplayPosition(), tron1.GetDisplayPosition(), Color.blue, 10f);
+                Debug.DrawLine(tron0.GetDisplayPosition(), tron1.GetDisplayPosition(), Color.blue, 3f);
             }
         }
     }
@@ -29,7 +33,7 @@ public class Utils
         {
             TronScript tron0 = obj0.GetComponent<TronScript>();
             int i = tron0.TronID;
-            Vector3 newCoulonb = new Vector3();
+            Vector3 newCoulonb = new Vector3(0,0,0);
             foreach (GameObject obj1 in tronList)
             {
                 TronScript tron1 = obj1.GetComponent<TronScript>();
@@ -67,13 +71,11 @@ public class Utils
             float thInc = Mathf.PI / (fine * Mathf.Sin(ph));
             for (float th = 0; th < 2 * Mathf.PI; th += thInc)
             {
-                //console.log("ph=" + ph + " th=" + th + " thi=" + thInc);
                 TupleSph sph = new TupleSph(1f, th, ph);
                 int closestIndex;
                 float maxDot = -1.0f;
-                Vector3 p = sph.GetVector3(); //p.sp2xy();
-                Debug.DrawLine(Vector3.zero, p, Color.gray, 1f);
-                //for (int i = 0; i < tronList.Count; ++i)
+                Vector3 p = sph.GetVector3();
+                //Debug.DrawLine(Vector3.zero, p, Color.gray, 1f);
                 foreach (GameObject obj in tronList)
                 {
                     TronScript tron = obj.GetComponent<TronScript>();
@@ -82,21 +84,15 @@ public class Utils
                     {
                         maxDot = dot;
                         closestIndex = tron.TronID;
-                        //console.log("closest=" + i + " dot=" + dot);
                     }
                 }
                 if (minDot > maxDot)
                 {
                     minDot = maxDot;
                     freePoint = p;
-                    //console.log("dot=" + maxDot);
-                    
-                    //var dot2 = drawDot(p, 0.0, size);
                 }
-                //hideDot(dot);
             }
         }
-        //var dot3 = drawDot(freePoint, 20.0, 20);
         return freePoint;
     }
 }

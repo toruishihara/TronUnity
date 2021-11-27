@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class TronScript : MonoBehaviour
 {
-    public int TronID;
-    public Vector3 Position;
-    public Vector3 Coulomb;
-    public Vector3 Rot;
+    public int TronID = 0;
+    public Vector3 Position = Vector3.zero;
+    public Vector3 Coulomb = Vector3.zero;
+    public Vector3 LaunchForce = Vector3.zero;
+    public bool isInside = false;
+
     private Rigidbody rb;
     //float v = 0.1f;
 
@@ -16,14 +18,14 @@ public class TronScript : MonoBehaviour
     void Start()
     {
         Debug.Log(string.Format("Tron start id={0}", TronID));
-        if (TronID < 10)
-        {
-            GetComponent<MeshRenderer>().material.color = Color.blue;
-        } else
-        {
-            GetComponent<MeshRenderer>().material.color = Color.red;
-        }
-        // new Color(TronID & 1, (TronID & 2) >> 1, (TronID & 4) >> 2, 1);
+        //if (TronID < 10)
+        //{
+        //    GetComponent<MeshRenderer>().material.color = Color.blue;
+        //} else
+        //{
+        //    GetComponent<MeshRenderer>().material.color = Color.red;
+        //}
+        GetComponent<MeshRenderer>().material.color = new Color(TronID & 1, (TronID & 2) >> 1, (TronID & 4) >> 2, 1);
 
         //rb = GetComponent<Rigidbody>();
         //rb.velocity = new Vector3(Random.Range(-1 * v, v), Random.Range(-1 * v, v), Random.Range(-1 * v, v));
@@ -32,8 +34,21 @@ public class TronScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Position += Coulomb;
-        Position.Normalize();
+        if (isInside)
+        {
+            Position += Coulomb;
+            Position.Normalize();
+        }
+        else
+        {
+            Position += LaunchForce;
+            if (Vector3.Distance(Vector3.zero, Position) <= 1.0f)
+            {
+                isInside = true;
+                LaunchForce = Vector3.zero;
+            }
+        }
+
         this.transform.position = GetDisplayPosition();
     }
 
@@ -44,13 +59,13 @@ public class TronScript : MonoBehaviour
         Vector3 pole_y = sph.GetComponent<SphereScript>().PoleY;
         Vector3 pole_z = sph.GetComponent<SphereScript>().PoleZ;
 
-        TupleSph t = new TupleSph(Position);
-        t.Unify();
-        Vector3 p = t.GetVector3();
+        //TupleSph t = new TupleSph(Position);
+        //t.Unify();
+        //Vector3 p = t.GetVector3();
         Vector3 p1;
-        p1.x = Vector3.Dot(p, pole_x);
-        p1.y = Vector3.Dot(p, pole_y);
-        p1.z = Vector3.Dot(p, pole_z);
+        p1.x = Vector3.Dot(Position, pole_x);
+        p1.y = Vector3.Dot(Position, pole_y);
+        p1.z = Vector3.Dot(Position, pole_z);
         return p1;
     }
 
