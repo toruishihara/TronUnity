@@ -33,6 +33,7 @@ public class TronScript : MonoBehaviour
     void Update()
     {
         Position += Coulomb;
+        Position.Normalize();
         this.transform.position = GetDisplayPosition();
     }
 

@@ -10,31 +10,24 @@ public class TupleSph
 
     public const float diff = 0.0000001f;
 
-    public TupleSph(float x, float y, float z)
+    public TupleSph(float r, float th, float ph)
     {
-        r = Mathf.Sqrt(x * x + y * y + z * z);
-        th = Mathf.Atan2(y, x);
-        if (r < diff)
-        {
-            ph = 0f;
-        }
-        else
-        {
-            ph = Mathf.Acos(z / r);
-        }
+        this.r = r;
+        this.th = th;
+        this.ph = ph;
     }
 
     public TupleSph(Vector3 v)
     {
-        r = Mathf.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-        th = Mathf.Atan2(v.y, v.x);
-        if (r < diff)
+        this.r = Mathf.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+        this.th = Mathf.Atan2(v.y, v.x);
+        if (this.r < diff)
         {
-            ph = 0.0f;
+            this.ph = 0.0f;
         }
         else
         {
-            ph = Mathf.Acos(v.z / r);
+            this.ph = Mathf.Acos(v.z / this.r);
         }
         //Debug.Log(string.Format("TupleSph xyz={0} {1} {2} sph={3} {4} {5}", v.x, v.y, v.z, r, th, ph));
     }
