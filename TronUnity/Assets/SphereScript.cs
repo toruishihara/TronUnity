@@ -27,7 +27,7 @@ public class SphereScript : MonoBehaviour
         Debug.DrawLine(Vector3.zero, PoleY, Color.green, 10f);
         Debug.DrawLine(Vector3.zero, PoleZ, Color.blue, 10f);
 
-        Create4(true);
+        //Create4(true);
     }
 
     // Update is called once per frame
@@ -56,23 +56,20 @@ public class SphereScript : MonoBehaviour
             if (sec % 10 == 0)
             {
                 Debug.Log("Every 10 Sec cnt=" + cnt + " new FPS=" + FPS);
+                if (tronCnt < 32)
+                {
+                    Create1(true);
+                }
             }
-            lastCnt = cnt;
-            if (sec % 20 == 0) {
-                // Do event every 20 sec
-                Debug.Log("Every 20 sec");
-                
+            if (sec % 10 == 9)
+            {
                 Utils.drawTronLine(TronList);
-                Create1();
-
-                Vector3 newPos = Utils.FindFreeSpacePoint(TronList);
-                Debug.DrawLine(Vector3.zero, newPos, Color.black, 10f);
-                //SetPoleXMove(-1*newPos);
             }
         }
-        lastSec = sec;
+        Utils.UpdateCoulomb(TronList, CoulombK);
 
-        Utils.UpdateCoulomb(TronList, CoulombK);            
+        lastSec = sec;
+        lastCnt = cnt;
     }
 
     void SetPoleXMove(Vector3 p)
@@ -92,16 +89,25 @@ public class SphereScript : MonoBehaviour
         poleMoveSteps = 1;
     }
 
-    void Create1()
+    void Create1(bool isRandom)
     {
-        Vector3 pos = new Vector3(-2f, 0, 0);
+        Vector3 pos = new Vector3(-3f, 0, 0);
 
         GameObject obj = Instantiate(TronPrefab, Vector3.zero, Quaternion.identity);
         TronScript tron = obj.GetComponent<TronScript>();
         tron.TronID = tronCnt++;
         tron.Position = pos;
         tron.isInside = false;
-        tron.LaunchForce = new Vector3(0.1f / FPS, 0, 0);
+        float v = 0.024f / FPS;
+        float dv = 0.05f;
+        if (isRandom)
+        {
+            tron.LaunchForce = new Vector3(v, v*Random.Range(-1*dv, dv), v*Random.Range(-1*dv, dv));
+        }
+        else
+        {
+            tron.LaunchForce = new Vector3(v, 0, 0);
+        }
         TronList.Add(obj);
     }
 

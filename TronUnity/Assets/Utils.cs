@@ -18,7 +18,7 @@ public class Utils
             {
                 TronScript tron1 = obj1.GetComponent<TronScript>();
                 int j = obj1.GetComponent<TronScript>().TronID;
-                if (j <= i)
+                if (j <= i || tron1.isInside == false)
                 {
                     continue;
                 }
