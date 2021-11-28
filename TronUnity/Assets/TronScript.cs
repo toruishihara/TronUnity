@@ -36,7 +36,7 @@ public class TronScript : MonoBehaviour
     {
         if (isInside)
         {
-            Position += Coulomb;
+            //Position += Coulomb;
             Position.Normalize();
         }
         else
