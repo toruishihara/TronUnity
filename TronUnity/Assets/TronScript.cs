@@ -36,37 +36,41 @@ public class TronScript : MonoBehaviour
     {
         if (isInside)
         {
-            //Position += Coulomb;
+            Position += Coulomb;
             Position.Normalize();
         }
         else
         {
-            Position += LaunchForce;
+            Position = new Vector3(0.99f*Position.x , 0.99f * Position.y, 0.99f * Position.z);
             if (Vector3.Distance(Vector3.zero, Position) <= 1.0f)
             {
                 isInside = true;
                 LaunchForce = Vector3.zero;
+                Position.Normalize();
             }
         }
-
         this.transform.position = GetDisplayPosition();
     }
 
     public Vector3 GetDisplayPosition()
     {
-        GameObject sph = GameObject.Find("Sphere");
-        Vector3 pole_x = sph.GetComponent<SphereScript>().PoleX;
-        Vector3 pole_y = sph.GetComponent<SphereScript>().PoleY;
-        Vector3 pole_z = sph.GetComponent<SphereScript>().PoleZ;
-
-        //TupleSph t = new TupleSph(Position);
-        //t.Unify();
-        //Vector3 p = t.GetVector3();
-        Vector3 p1;
-        p1.x = Vector3.Dot(Position, pole_x);
-        p1.y = Vector3.Dot(Position, pole_y);
-        p1.z = Vector3.Dot(Position, pole_z);
-        return p1;
+        if (isInside)
+        {
+            GameObject sph = GameObject.Find("Sphere");
+            Vector3 pole_x = sph.GetComponent<SphereScript>().PoleX;
+            Vector3 pole_y = sph.GetComponent<SphereScript>().PoleY;
+            Vector3 pole_z = sph.GetComponent<SphereScript>().PoleZ;
+           
+            Vector3 p1;
+            p1.x = Vector3.Dot(Position, pole_x);
+            p1.y = Vector3.Dot(Position, pole_y);
+            p1.z = Vector3.Dot(Position, pole_z);
+            return p1;
+        }
+        else
+        {
+            return Position;
+        }
     }
 
     

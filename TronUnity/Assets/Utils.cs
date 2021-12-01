@@ -32,6 +32,10 @@ public class Utils
         foreach (GameObject obj0 in tronList)
         {
             TronScript tron0 = obj0.GetComponent<TronScript>();
+            if (tron0.isInside == false)
+            {
+                continue;
+            }
             int i = tron0.TronID;
             Vector3 newCoulonb = new Vector3(0,0,0);
             foreach (GameObject obj1 in tronList)
@@ -39,6 +43,10 @@ public class Utils
                 TronScript tron1 = obj1.GetComponent<TronScript>();
                 int j = tron1.TronID;
                 if (i == j)
+                {
+                    continue;
+                }
+                if (tron1.isInside == false)
                 {
                     continue;
                 }
