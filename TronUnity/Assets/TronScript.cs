@@ -45,7 +45,10 @@ public class TronScript : MonoBehaviour
             if (Vector3.Distance(Vector3.zero, Position) <= 1.0f)
             {
                 isInside = true;
-                LaunchForce = Vector3.zero;
+                GameObject sph = GameObject.Find("Sphere");
+                Vector3 pole_x = sph.GetComponent<SphereScript>().PoleX;
+                Vector3 d = Vector3.right - pole_x;
+                Position += d;
                 Position.Normalize();
             }
         }

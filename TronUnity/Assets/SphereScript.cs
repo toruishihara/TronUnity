@@ -59,6 +59,7 @@ public class SphereScript : MonoBehaviour
                 RotateTarget = Vector3.right;
             }
         }
+        /*
         if (Nth_method == true && RotateStep > 0)
         {
             float p1 = (float)RotateStep / (float)RotateTotalSteps;
@@ -82,6 +83,7 @@ public class SphereScript : MonoBehaviour
                 RotateStep++;
             }
         }
+        */
         if (sec > lastSec)
         {
             Debug.Log("sec=" + sec + " RotateStep=" + RotateStep);
@@ -94,26 +96,49 @@ public class SphereScript : MonoBehaviour
             }
             if (sec % 5 == 0)
             {
-                SetPoleXMove(Utils.FindFreeSpacePoint(TronList));
+                //SetPoleXMove(Utils.FindFreeSpacePoint(TronList));
             }
 
-            if (sec % 10 == 0)
+            if (sec == 10)
+            {
+                CreateN(8, false);
+            }
+            if (sec == 15)
+            {
+                Vector3 p2 = new Vector3(1f, 0.1f, 0.1f);
+                p2.Normalize();
+                //SetPoleXMove(p2);
+            }
+            if (sec == 25)
+            {
+                Vector3 p2 = new Vector3(1f, 0.2f, 0.2f);
+                p2.Normalize();
+                //SetPoleXMove(p2);
+            }
+
+            if (sec % 20 == 5)
             {
                 Debug.Log("Every 10 Sec cnt=" + cnt + " new FPS=" + FPS);
                 if (tronCnt < 32)
                 {
-                    Create1(true);
+                    Create1(false);
                 }
             }
-            if (sec % 30 == 29)
+            if (sec % 20 == 15)
             {
                 Utils.drawTronLine(TronList);
             }
+            if (sec % 20 == 19)
+            {
+                //Utils.drawTronLine(TronList);
+                Vector3 p2 = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+                p2.Normalize();
+                SetPoleXMove(p2);
+            }
+
         }
         Utils.UpdateCoulomb(TronList, CoulombK);
-
         lastSec = sec;
-        
     }
 
     void SetPoleXMove(Vector3 p)
