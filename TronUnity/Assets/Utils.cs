@@ -6,6 +6,7 @@ public class Utils
 {
     public static void drawTronLine(List<GameObject> tronList)
     {
+        float min_d = 2.0f;
         foreach (GameObject obj0 in tronList)
         {
             TronScript tron0 = obj0.GetComponent<TronScript>();
@@ -22,9 +23,42 @@ public class Utils
                 {
                     continue;
                 }
-                Debug.DrawLine(tron0.GetDisplayPosition(), tron1.GetDisplayPosition(), Color.blue, 3f);
+                float d = Vector3.Distance(tron0.Position, tron1.Position);
+                if (d < min_d)
+                {
+                    min_d = d;
+                }
+                //Debug.DrawLine(tron0.GetDisplayPosition(), tron1.GetDisplayPosition(), Color.blue, 3f);
             }
         }
+        foreach (GameObject obj0 in tronList)
+        {
+            TronScript tron0 = obj0.GetComponent<TronScript>();
+            int i = tron0.TronID;
+            if (tron0.isInside == false)
+            {
+                continue;
+            }
+            foreach (GameObject obj1 in tronList)
+            {
+                TronScript tron1 = obj1.GetComponent<TronScript>();
+                int j = obj1.GetComponent<TronScript>().TronID;
+                if (j <= i || tron1.isInside == false)
+                {
+                    continue;
+                }
+                float d = Vector3.Distance(tron0.Position, tron1.Position);
+                if (d < 1.1*min_d)
+                {
+                    Debug.DrawLine(tron0.GetDisplayPosition(), tron1.GetDisplayPosition(), Color.blue, 3f);
+                }
+                else if (d < 1.5 * min_d)
+                {
+                    Debug.DrawLine(tron0.GetDisplayPosition(), tron1.GetDisplayPosition(), Color.green, 2f);
+                }
+            }
+        }
+
     }
 
     public static void UpdateCoulomb(List<GameObject> tronList, float k)
