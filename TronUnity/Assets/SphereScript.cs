@@ -22,9 +22,8 @@ public class SphereScript : MonoBehaviour
     private Vector3 RotateTarget = Vector3.zero;
     private int RotateTotalSteps = 1000;
     private int RotateStep = 0;
+    private bool RotateNearY = false;
 
-    private bool Nth_method = false;
-    private bool Slerp_method = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,13 +42,21 @@ public class SphereScript : MonoBehaviour
         float t = Time.realtimeSinceStartup;
         int sec = (int)t;
 
-        if (Slerp_method == true && RotateStep > 0)
+        if (RotateStep > 0)
         {
             float fracComplete = (float)RotateStep / (float)RotateTotalSteps;
             Vector3 newX = Vector3.Slerp(Vector3.right, RotateTarget, fracComplete);
             PoleX = newX;
-            PoleZ = Vector3.Cross(PoleX, PoleY);
-            PoleY = Vector3.Cross(PoleZ, PoleX);
+            if (RotateNearY)
+            {
+                PoleY = Vector3.Cross(PoleZ, PoleX);
+                PoleZ = Vector3.Cross(PoleX, PoleY);
+            }
+            else
+            {
+                PoleZ = Vector3.Cross(PoleX, PoleY);
+                PoleY = Vector3.Cross(PoleZ, PoleX);
+            }
             //Debug.DrawLine(Vector3.zero, newX, Color.gray, 1f);
             ++RotateStep;
             if (RotateStep > RotateTotalSteps)
@@ -59,31 +66,6 @@ public class SphereScript : MonoBehaviour
                 RotateTarget = Vector3.right;
             }
         }
-        /*
-        if (Nth_method == true && RotateStep > 0)
-        {
-            float p1 = (float)RotateStep / (float)RotateTotalSteps;
-            float p0 = 1.0f - p1;
-            Vector3 t1 = RotateTarget;
-            Vector3 x0 = Vector3.right;
-
-            Vector3 newX = new Vector3(p0*x0.x + p1*t1.x, p0* x0.y + p1*t1.y, p0* x0.z + p1*t1.z);
-            newX.Normalize();
-            PoleX = newX;
-            PoleZ = Vector3.Cross(PoleX, PoleY);
-            PoleY = Vector3.Cross(PoleZ, PoleX);
-            if (RotateStep == RotateTotalSteps)
-            {
-                ResetToPole();
-                RotateStep = 0;
-                RotateTarget = Vector3.zero;
-            }
-            else
-            {
-                RotateStep++;
-            }
-        }
-        */
         if (sec > lastSec)
         {
             Debug.Log("sec=" + sec + " RotateStep=" + RotateStep);
@@ -101,7 +83,7 @@ public class SphereScript : MonoBehaviour
 
             if (sec == 10)
             {
-                CreateN(8, false);
+                //CreateN(8, false);
             }
             if (sec == 15)
             {
@@ -116,7 +98,7 @@ public class SphereScript : MonoBehaviour
                 //SetPoleXMove(p2);
             }
 
-            if (sec % 20 == 5)
+            //if (sec % 2 == 1)
             {
                 Debug.Log("Every 10 Sec cnt=" + cnt + " new FPS=" + FPS);
                 if (tronCnt < 32)
@@ -128,10 +110,10 @@ public class SphereScript : MonoBehaviour
             {
                 Utils.drawTronLine(TronList);
             }
-            if (sec % 20 == 19)
+            if (sec % 8 == 0)
             {
                 //Utils.drawTronLine(TronList);
-                Vector3 p2 = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+                Vector3 p2 = new Vector3(0, Random.Range(-1f, 1f), Random.Range(-1f, 1f));
                 p2.Normalize();
                 SetPoleXMove(p2);
             }
@@ -150,7 +132,15 @@ public class SphereScript : MonoBehaviour
         RotateTarget.Normalize();
         RotateStep = 1;
         RotateTotalSteps = (int)(angle * FPS / 15f); // 15 degree / sec
-        Debug.DrawLine(Vector3.zero, RotateTarget, Color.black, 2f);
+        float dotY = Mathf.Abs(Vector3.Dot(PoleY, RotateTarget));
+        float dotZ = Mathf.Abs(Vector3.Dot(PoleZ, RotateTarget));
+        if (dotY > dotZ)
+        {
+            RotateNearY = true;
+        } else {
+            RotateNearY = false;
+        }
+        //Debug.DrawLine(Vector3.zero, RotateTarget, Color.black, 2f);
     }
 
     void Create1(bool isRandom)
