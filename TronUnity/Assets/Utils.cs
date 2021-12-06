@@ -11,18 +11,12 @@ public class Utils
         {
             TronScript tron0 = obj0.GetComponent<TronScript>();
             int i = tron0.TronID;
-            if (tron0.isInside == false)
-            {
-                continue;
-            }
+            if (tron0.isInside == false) { continue; }
             foreach (GameObject obj1 in tronList)
             {
                 TronScript tron1 = obj1.GetComponent<TronScript>();
                 int j = obj1.GetComponent<TronScript>().TronID;
-                if (j <= i || tron1.isInside == false)
-                {
-                    continue;
-                }
+                if (j <= i || tron1.isInside == false) { continue; }
                 float d = Vector3.Distance(tron0.Position, tron1.Position);
                 if (d < min_d)
                 {
@@ -35,18 +29,12 @@ public class Utils
         {
             TronScript tron0 = obj0.GetComponent<TronScript>();
             int i = tron0.TronID;
-            if (tron0.isInside == false)
-            {
-                continue;
-            }
+            if (tron0.isInside == false) { continue; }
             foreach (GameObject obj1 in tronList)
             {
                 TronScript tron1 = obj1.GetComponent<TronScript>();
                 int j = obj1.GetComponent<TronScript>().TronID;
-                if (j <= i || tron1.isInside == false)
-                {
-                    continue;
-                }
+                if (j <= i || tron1.isInside == false) { continue; }
                 float d = Vector3.Distance(tron0.Position, tron1.Position);
                 if (d < 1.1*min_d)
                 {
@@ -66,28 +54,23 @@ public class Utils
         foreach (GameObject obj0 in tronList)
         {
             TronScript tron0 = obj0.GetComponent<TronScript>();
-            if (tron0.isInside == false)
-            {
-                continue;
-            }
+            if (tron0.isInside == false) { continue; }
             int i = tron0.TronID;
             Vector3 newCoulonb = new Vector3(0,0,0);
             foreach (GameObject obj1 in tronList)
             {
                 TronScript tron1 = obj1.GetComponent<TronScript>();
                 int j = tron1.TronID;
-                if (i == j)
-                {
-                    continue;
-                }
-                if (tron1.isInside == false)
-                {
-                    continue;
-                }
+                if (i == j) { continue; }
+                if (tron1.isInside == false) { continue; }
                 float dis2 = CalcDistance2(tron0.Position, tron1.Position);
                 if (dis2 < TupleSph.diff)
                 {
-                    continue;
+                    // Too close, add random force
+                    float r0 = -0.001f;
+                    float r1 = 0.001f;
+                    Vector3 rand = new Vector3(Random.Range(r0,r1), Random.Range(r0, r1), Random.Range(r0, r1));
+                    newCoulonb += rand;
                 }
                 Vector3 d = tron0.Position - tron1.Position;
                 d /= dis2;
