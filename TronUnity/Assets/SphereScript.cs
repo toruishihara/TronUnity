@@ -76,9 +76,12 @@ public class SphereScript : MonoBehaviour
             ++RotateStep;
             if (RotateStep > RotateTotalSteps)
             {
+                Vector3 d = RotateTarget - PoleX;
+                Vector3 nextTarget = RotateTarget + d;
+
                 ResetToPole();
-                RotateStep = 0;
-                RotateTarget = Vector3.right;
+                RotateTarget = nextTarget;
+                RotateStep = 1;
             }
         }
         if (sec > lastSec)
@@ -104,9 +107,10 @@ public class SphereScript : MonoBehaviour
             {
                 Utils.drawTronLine(TronList);
             }
-            if (sec % 5 == 4 && RotateStep == 0)
+            if (sec % 20 == 1 || RotateStep == 0)
             {
                 //Utils.drawTronLine(TronList);
+                ResetToPole();
                 Vector3 p2 = new Vector3(0.5f, Random.Range(-1f, 1f), Random.Range(-1f, 1f));
                 p2.Normalize();
                 SetPoleXMove(p2);
@@ -125,7 +129,7 @@ public class SphereScript : MonoBehaviour
         float angle = 180f * rad / Mathf.PI;
         RotateTarget.Normalize();
         RotateStep = 1;
-        RotateTotalSteps = (int)(angle * FPS / 15f); // 15 degree / sec
+        RotateTotalSteps = (int)(angle * FPS / 10f); // 10 degree / sec
         float dotY = Mathf.Abs(Vector3.Dot(PoleY, RotateTarget));
         float dotZ = Mathf.Abs(Vector3.Dot(PoleZ, RotateTarget));
         Debug.Log("SetPoleXMove=" + p + " dot=" + dot + " angle=" + angle + " dotY=" + dotY + " dotZ=" + dotZ);
@@ -202,8 +206,7 @@ public class SphereScript : MonoBehaviour
     }
 
     private void ResetToPole()
-    {
-        
+    {     
         foreach (GameObject obj in TronList)
         {
             TronScript tron = obj.GetComponent<TronScript>();
