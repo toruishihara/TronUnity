@@ -149,7 +149,7 @@ public class Utils
         return s;
     }
 
-    public static List<Vector3> FindFacePoints(List<GameObject> tronList)
+    public static List<Vector3> GetFacePoints(List<GameObject> tronList)
     {
         List<Vector3> facepoints = new List<Vector3>();
         //List<int> dupCheck = new List<int>();
@@ -165,7 +165,7 @@ public class Utils
             foreach (GameObject obj1 in tronList)
             {
                 TronScript tron1 = obj1.GetComponent<TronScript>();
-                if (tron1.TronID < tron0.TronID) { continue; }
+                if (tron1.TronID <= tron0.TronID) { continue; }
                 float dis = Vector3.Distance(tron0.Position, tron1.Position);
                 if (dis < shortest)
                 {
@@ -173,21 +173,21 @@ public class Utils
                 }
             }
         }
-        int cnt = 0;
+        //int cnt = 0;
         foreach (GameObject obj0 in tronList)
         {
             TronScript tron0 = obj0.GetComponent<TronScript>();
             foreach (GameObject obj1 in tronList)
             {
                 TronScript tron1 = obj1.GetComponent<TronScript>();
-                if (tron1.TronID < tron0.TronID) { continue; }
+                if (tron1.TronID <= tron0.TronID) { continue; }
                 float dis01 = Vector3.Distance(tron0.Position, tron1.Position);
                 if (dis01 < shortest * 1.5 && dis01 > 0.00001)
                 {
                     foreach (GameObject obj2 in tronList)
                     {
                         TronScript tron2 = obj2.GetComponent<TronScript>();
-                        if (tron2.TronID < tron1.TronID) { continue; }
+                        if (tron2.TronID <= tron1.TronID) { continue; }
                         float dis02 = Vector3.Distance(tron0.Position, tron2.Position);
                         float dis12 = Vector3.Distance(tron1.Position, tron2.Position);
                         if (dis02 < shortest * 1.5 && dis12 < shortest * 1.5)
@@ -225,8 +225,8 @@ public class Utils
                             //}
                             //dupCheck[idx] = 1;
                             // above is not perfect code for floating xyz values
-
-                            //TODO: facepoints.push(new facePoint(-1, ps));
+                            //Debug.DrawLine(Vector3.zero, ps, Color.blue, 1f);
+                            facepoints.Add(ps);
                             //drawDotps, 0x000000, 2);
                             //TODO: addTriangleFace(p01, p0, ps);
                             //TODO: addTriangleFace(p0, p20, ps);

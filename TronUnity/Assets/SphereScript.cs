@@ -29,13 +29,15 @@ public class SphereScript : MonoBehaviour
     private int RotateStep = 0;
     private bool RotateNearY = false;
 
+    public List<Vector3> FacePoints;
+
     // Start is called before the first frame update
     void Start()
     {
         float t = Time.realtimeSinceStartup;
         Debug.Log("Sph start t=" + t);
         Random.InitState(0);
-        
+
         Debug.DrawLine(Vector3.zero, PoleX, Color.red, 1f);
         Debug.DrawLine(Vector3.zero, PoleY, Color.green, 1f);
         Debug.DrawLine(Vector3.zero, PoleZ, Color.blue, 1f);
@@ -61,7 +63,7 @@ public class SphereScript : MonoBehaviour
             LastPoleZ = PoleZ;
 
             PoleX = newX;
-           
+
             if (RotateNearY)
             {
                 PoleY = Vector3.Cross(PoleZ, PoleX);
@@ -80,6 +82,7 @@ public class SphereScript : MonoBehaviour
                 Vector3 nextTarget = RotateTarget + d;
 
                 ResetToPole();
+                FaceWork();
                 RotateTarget = nextTarget;
                 RotateStep = 1;
             }
@@ -98,19 +101,20 @@ public class SphereScript : MonoBehaviour
             if (sec > 10 && sec % 2 == 1)
             {
                 //Debug.Log("Every 10 Sec cnt=" + cnt + " new FPS=" + FPS);
-                if (tronCnt < 32)
+                if (tronCnt < 12)
                 {
-                    Create1(false);
+                    AddTron(false);
                 }
             }
-            if (sec % 20 == 15)
-            {
-                Utils.drawTronLine(TronList);
-            }
+            //if (sec % 20 == 15)
+            //{
+            //    Utils.drawTronLine(TronList);
+            //}
             if (sec % 20 == 1 || RotateStep == 0)
             {
                 //Utils.drawTronLine(TronList);
                 ResetToPole();
+                FaceWork();
                 Vector3 p2 = new Vector3(0.5f, Random.Range(-1f, 1f), Random.Range(-1f, 1f));
                 p2.Normalize();
                 SetPoleXMove(p2);
@@ -122,26 +126,29 @@ public class SphereScript : MonoBehaviour
 
     void SetPoleXMove(Vector3 p)
     {
-        
+
         RotateTarget = p;
         float dot = Vector3.Dot(PoleX, RotateTarget);
         float rad = Mathf.Acos(dot);
         float angle = 180f * rad / Mathf.PI;
         RotateTarget.Normalize();
         RotateStep = 1;
-        RotateTotalSteps = (int)(angle * FPS / 10f); // 10 degree / sec
+        RotateTotalSteps = (int)(angle * FPS / 5f); // 5 degree / sec
         float dotY = Mathf.Abs(Vector3.Dot(PoleY, RotateTarget));
         float dotZ = Mathf.Abs(Vector3.Dot(PoleZ, RotateTarget));
         Debug.Log("SetPoleXMove=" + p + " dot=" + dot + " angle=" + angle + " dotY=" + dotY + " dotZ=" + dotZ);
-        if (dotY > dotZ) {
+        if (dotY > dotZ)
+        {
             RotateNearY = true;
-        } else {
+        }
+        else
+        {
             RotateNearY = false;
         }
         Debug.DrawLine(Vector3.zero, RotateTarget, Color.black, 2f);
     }
 
-    void Create1(bool isRandom)
+    void AddTron(bool isRandom)
     {
         Vector3 pos = new Vector3(-3f, 0, 0);
 
@@ -154,7 +161,7 @@ public class SphereScript : MonoBehaviour
         float dv = 0.05f;
         if (isRandom)
         {
-            tron.LaunchForce = new Vector3(v, v*Random.Range(-1*dv, dv), v*Random.Range(-1*dv, dv));
+            tron.LaunchForce = new Vector3(v, v * Random.Range(-1 * dv, dv), v * Random.Range(-1 * dv, dv));
         }
         else
         {
@@ -163,7 +170,7 @@ public class SphereScript : MonoBehaviour
         TronList.Add(obj);
     }
 
-    void CreateN(int n, bool isRandom)
+    void AddTronN(int n, bool isRandom)
     {
         for (int i = 0; i < n; ++i)
         {
@@ -206,7 +213,7 @@ public class SphereScript : MonoBehaviour
     }
 
     private void ResetToPole()
-    {     
+    {
         foreach (GameObject obj in TronList)
         {
             TronScript tron = obj.GetComponent<TronScript>();
@@ -221,5 +228,37 @@ public class SphereScript : MonoBehaviour
         PoleX = Vector3.right;
         PoleY = Vector3.up;
         PoleZ = Vector3.forward;
+    }
+
+    private void FaceWork()
+    {
+        float near = 99.9f;
+        FacePoints = Utils.GetFacePoints(TronList);
+        for (int i = 0; i < FacePoints.Count; ++i)
+        {
+            Vector3 p0 = FacePoints[i];
+            for (int j = i + 1; j < FacePoints.Count; ++j)
+            {
+                Vector3 p1 = FacePoints[j];
+                float dis = Vector3.Distance(p0, p1);
+                if (dis < near)
+                {
+                    near = dis;
+                }
+            }
+        }
+        for (int i = 0; i < FacePoints.Count; ++i)
+        {
+            Vector3 p0 = FacePoints[i];
+            for (int j = i + 1; j < FacePoints.Count; ++j)
+            {
+                Vector3 p1 = FacePoints[j];
+                float dis = Vector3.Distance(p0, p1);
+                if (dis < 1.35 * near)
+                {
+                    Debug.DrawLine(p0, p1, Color.blue, 1f);
+                }
+            }
+        }
     }
 }
