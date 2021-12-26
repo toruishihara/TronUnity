@@ -8,7 +8,8 @@ public class SphereScript : MonoBehaviour
     public GameObject TronPrefab;
     public GameObject FacePrefab;
     public List<GameObject> TronList = new List<GameObject>();
-    public const float CoulombK = 0.001f;
+    public List<GameObject> FaceList = new List<GameObject>();
+    public const float CoulombK = 0.002f;
     public Vector3 PoleX = new Vector3(1f, 0, 0);
     public Vector3 PoleY = new Vector3(0, 1f, 0);
     public Vector3 PoleZ = new Vector3(0, 0, 1f);
@@ -134,7 +135,7 @@ public class SphereScript : MonoBehaviour
         float angle = 180f * rad / Mathf.PI;
         RotateTarget.Normalize();
         RotateStep = 1;
-        RotateTotalSteps = (int)(angle * FPS / 5f); // 5 degree / sec
+        RotateTotalSteps = (int)(angle * FPS / 10.0f); // 2.5 degree / sec
         float dotY = Mathf.Abs(Vector3.Dot(PoleY, RotateTarget));
         float dotZ = Mathf.Abs(Vector3.Dot(PoleZ, RotateTarget));
         Debug.Log("SetPoleXMove=" + p + " dot=" + dot + " angle=" + angle + " dotY=" + dotY + " dotZ=" + dotZ);
@@ -146,7 +147,7 @@ public class SphereScript : MonoBehaviour
         {
             RotateNearY = false;
         }
-        Debug.DrawLine(Vector3.zero, RotateTarget, Color.black, 2f);
+        Debug.DrawLine(Vector3.zero, RotateTarget, Color.black, 1f);
     }
 
     void AddTron(bool isRandom)
@@ -234,13 +235,18 @@ public class SphereScript : MonoBehaviour
     private void FaceWork()
     {
         float near = 99.9f;
+        for (int i = 0; i < FaceList.Count; ++i)
+        {
+            Destroy(FaceList[i]);
+        }
+        FaceList.Clear();
         FacePoints = Utils.GetFacePoints(TronList);
         for (int i = 0; i < FacePoints.Count; ++i)
         {
             Vector3 p0 = FacePoints[i];
-            for (int j = i + 1; j < FacePoints.Count; ++j)
+            for (int j = 0; j < TronList.Count; ++j)
             {
-                Vector3 p1 = FacePoints[j];
+                Vector3 p1 = TronList[j].GetComponent<TronScript>().Position;
                 float dis = Vector3.Distance(p0, p1);
                 if (dis < near)
                 {
@@ -248,17 +254,30 @@ public class SphereScript : MonoBehaviour
                 }
             }
         }
-        for (int i = 0; i < FacePoints.Count; ++i)
+        for (int i = 0; i < TronList.Count; ++i)
         {
-            Vector3 p0 = FacePoints[i];
-            for (int j = i + 1; j < FacePoints.Count; ++j)
+            Vector3 p0 = TronList[i].GetComponent<TronScript>().Position;
+            for (int j = 0; j < FacePoints.Count; ++j)
             {
                 Vector3 p1 = FacePoints[j];
-                float dis = Vector3.Distance(p0, p1);
-                if (dis < 1.35 * near)
+                float dis1 = Vector3.Distance(p0, p1);
+                if (dis1 < 1.1 * near)
                 {
-                    Debug.DrawLine(p0, p1, Color.blue, 1f);
-                    FaceWork2();
+                    Debug.DrawLine(Vector3.zero, p0, Color.blue, 2f);
+                    Debug.DrawLine(Vector3.zero, p1, Color.green, 1f);
+                    for (int k = j + 1; k < FacePoints.Count; ++k)
+                    {
+                        Vector3 p2 = FacePoints[k];
+                        float dis2 = Vector3.Distance(p0, p2);
+                        if (dis2 < 1.1 * near)
+                        {
+                            GameObject f = Instantiate(FacePrefab, Vector3.zero, Quaternion.identity);
+                            FaceScript face = f.GetComponent<FaceScript>();
+                            face.SetPoints(p0, p1, p2);
+                            FaceList.Add(f);
+                            Debug.DrawLine(Vector3.zero, p2, Color.green, 1f);
+                        }
+                    }
                 }
             }
         }
