@@ -6,6 +6,7 @@ public class SphereScript : MonoBehaviour
 {
     public float alpha = .1f;
     public GameObject TronPrefab;
+    public GameObject FacePrefab;
     public List<GameObject> TronList = new List<GameObject>();
     public const float CoulombK = 0.001f;
     public Vector3 PoleX = new Vector3(1f, 0, 0);
@@ -257,8 +258,16 @@ public class SphereScript : MonoBehaviour
                 if (dis < 1.35 * near)
                 {
                     Debug.DrawLine(p0, p1, Color.blue, 1f);
+                    FaceWork2();
                 }
             }
         }
+    }
+
+    private void FaceWork2()
+    {
+        GameObject f0 = Instantiate(FacePrefab, Vector3.zero, Quaternion.identity);
+        FaceScript face0 = f0.GetComponent<FaceScript>();
+        face0.SetPoints(new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1));
     }
 }
