@@ -7,8 +7,10 @@ public class SphereScript : MonoBehaviour
     public float alpha = .1f;
     public GameObject TronPrefab;
     public GameObject FacePrefab;
+    public GameObject CylinderPrefab;
     public List<GameObject> TronList = new List<GameObject>();
     public List<GameObject> FaceList = new List<GameObject>();
+    public List<GameObject> CylinderList = new List<GameObject>();
     public const float CoulombK = 0.002f;
     public Vector3 PoleX = new Vector3(1f, 0, 0);
     public Vector3 PoleY = new Vector3(0, 1f, 0);
@@ -39,10 +41,6 @@ public class SphereScript : MonoBehaviour
         float t = Time.realtimeSinceStartup;
         Debug.Log("Sph start t=" + t);
         Random.InitState(0);
-
-        Debug.DrawLine(Vector3.zero, PoleX, Color.red, 1f);
-        Debug.DrawLine(Vector3.zero, PoleY, Color.green, 1f);
-        Debug.DrawLine(Vector3.zero, PoleZ, Color.blue, 1f);
     }
 
     // Update is called once per frame
@@ -241,6 +239,12 @@ public class SphereScript : MonoBehaviour
             Destroy(FaceList[i]);
         }
         FaceList.Clear();
+        for (int i = 0; i < CylinderList.Count; ++i)
+        {
+            Destroy(CylinderList[i]);
+        }
+        CylinderList.Clear();
+
         FacePoints = Utils.GetFacePoints(TronList);
         // calc Tron - FacePoint nearest distance
         for (int i = 0; i < FacePoints.Count; ++i)
@@ -294,6 +298,8 @@ public class SphereScript : MonoBehaviour
                             face.SetPoints(p0, p1, p2);
                             FaceList.Add(f);
                             Debug.DrawLine(Vector3.zero, p2, Color.green, 1f);
+
+                            addCylinder(p1, p2);
                         }
                     }
                 }
@@ -306,5 +312,17 @@ public class SphereScript : MonoBehaviour
         GameObject f0 = Instantiate(FacePrefab, Vector3.zero, Quaternion.identity);
         FaceScript face0 = f0.GetComponent<FaceScript>();
         face0.SetPoints(new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1));
+    }
+
+    private void addCylinder(Vector3 p1, Vector3 p2)
+    {
+        float w = 0.01f;
+        float len = Vector3.Distance(p1, p2);
+        Vector3 offset = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+        Vector3 p12 = new Vector3(0.5f * (p1.x + p2.x), 0.5f * (p1.y + p2.y), 0.5f * (p1.z + p2.z));
+        GameObject cylinder = Instantiate(CylinderPrefab, p12, Quaternion.identity);
+        cylinder.transform.up = offset;
+        cylinder.transform.localScale = new Vector3(w, len/2.0f, w);
+        CylinderList.Add(cylinder);
     }
 }
