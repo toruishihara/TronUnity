@@ -234,13 +234,15 @@ public class SphereScript : MonoBehaviour
 
     private void FaceWork()
     {
-        float near = 99.9f;
+        float near0 = 99.9f;
+        float near1 = 99.9f;
         for (int i = 0; i < FaceList.Count; ++i)
         {
             Destroy(FaceList[i]);
         }
         FaceList.Clear();
         FacePoints = Utils.GetFacePoints(TronList);
+        // calc Tron - FacePoint nearest distance
         for (int i = 0; i < FacePoints.Count; ++i)
         {
             Vector3 p0 = FacePoints[i];
@@ -248,28 +250,44 @@ public class SphereScript : MonoBehaviour
             {
                 Vector3 p1 = TronList[j].GetComponent<TronScript>().Position;
                 float dis = Vector3.Distance(p0, p1);
-                if (dis < near)
+                if (dis < near0)
                 {
-                    near = dis;
+                    near0 = dis;
                 }
             }
         }
+        // calc Tron - FacePoint nearest distance
+        for (int i = 0; i < FacePoints.Count; ++i)
+        {
+            Vector3 p0 = FacePoints[i];
+            for (int j = i+1; j < FacePoints.Count; ++j)
+            {
+                Vector3 p1 = FacePoints[j];
+                float dis = Vector3.Distance(p0, p1);
+                if (dis < near1)
+                {
+                    near1 = dis;
+                }
+            }
+        }
+
         for (int i = 0; i < TronList.Count; ++i)
         {
             Vector3 p0 = TronList[i].GetComponent<TronScript>().Position;
             for (int j = 0; j < FacePoints.Count; ++j)
             {
                 Vector3 p1 = FacePoints[j];
-                float dis1 = Vector3.Distance(p0, p1);
-                if (dis1 < 1.1 * near)
+                float dis01 = Vector3.Distance(p0, p1);
+                if (dis01 < 1.1*near0)
                 {
                     Debug.DrawLine(Vector3.zero, p0, Color.blue, 2f);
                     Debug.DrawLine(Vector3.zero, p1, Color.green, 1f);
                     for (int k = j + 1; k < FacePoints.Count; ++k)
                     {
                         Vector3 p2 = FacePoints[k];
-                        float dis2 = Vector3.Distance(p0, p2);
-                        if (dis2 < 1.1 * near)
+                        float dis02 = Vector3.Distance(p0, p2);
+                        float dis12 = Vector3.Distance(p1, p2);
+                        if (dis02 < 1.1*near0 && dis12 < 1.1*near1)
                         {
                             GameObject f = Instantiate(FacePrefab, Vector3.zero, Quaternion.identity);
                             FaceScript face = f.GetComponent<FaceScript>();
