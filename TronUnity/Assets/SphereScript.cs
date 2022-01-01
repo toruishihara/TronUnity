@@ -5,7 +5,7 @@ using UnityEngine;
 public class SphereScript : MonoBehaviour
 {
     public float alpha = .1f;
-    public int TotalTrons = 32;
+    public int TotalTrons = 0;
     public GameObject TronPrefab;
     public GameObject FacePrefab;
     public GameObject CylinderPrefab;
@@ -42,7 +42,7 @@ public class SphereScript : MonoBehaviour
         float t = Time.realtimeSinceStartup;
         Debug.Log("Sph start t=" + t);
         Random.InitState(0);
-        TotalTrons = 32;
+        TotalTrons = 72;
     }
 
     // Update is called once per frame
@@ -284,7 +284,7 @@ public class SphereScript : MonoBehaviour
             {
                 Vector3 p1 = FacePoints[j];
                 float dis01 = Vector3.Distance(p0, p1);
-                if (dis01 < 1.5*near0)
+                if (dis01 < 1.7*near0)
                 {
                     Debug.DrawLine(Vector3.zero, p0, Color.blue, 2f);
                     Debug.DrawLine(Vector3.zero, p1, Color.green, 1f);
@@ -293,9 +293,11 @@ public class SphereScript : MonoBehaviour
                         Vector3 p2 = FacePoints[k];
                         float dis02 = Vector3.Distance(p0, p2);
                         float dis12 = Vector3.Distance(p1, p2);
-                        if (dis02 < 1.5*near0 && dis12 < 1.5*near1)
+                        if (dis02 < 1.7*near0 && dis12 < 1.7*near1)
                         {
                             GameObject f = Instantiate(FacePrefab, Vector3.zero, Quaternion.identity);
+                            //MeshRenderer mesh = f.GetComponent<MeshRenderer>();
+                            //mesh.enabled = false;
                             FaceScript face = f.GetComponent<FaceScript>();
                             face.SetPoints(p0, p1, p2);
                             FaceList.Add(f);
@@ -319,6 +321,8 @@ public class SphereScript : MonoBehaviour
     private void addCylinder(Vector3 p1, Vector3 p2)
     {
         GameObject obj = Instantiate(CylinderPrefab, Vector3.zero, Quaternion.identity);
+        //MeshRenderer mesh = obj.GetComponent<MeshRenderer>();
+        //mesh.enabled = false;
         CylinderScript cyl = obj.GetComponent<CylinderScript>();
         cyl.SetStartEnd(p1, p2);
         CylinderList.Add(obj);

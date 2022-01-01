@@ -17,6 +17,8 @@ public class CylinderScript : MonoBehaviour
         Sphere = GameObject.Find("Sphere").GetComponent<SphereScript>();
         start = s;
         end = e;
+        //MeshRenderer mesh = this.GetComponent<MeshRenderer>();
+        //mesh.enabled = true;
     }
 
     // Update is called once per frame

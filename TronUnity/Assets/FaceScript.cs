@@ -17,7 +17,7 @@ public class FaceScript : MonoBehaviour
         positions[1] = b;
         positions[2] = c;
         gameObject.AddComponent<MeshFilter>();
-        //gameObject.AddComponent<MeshRenderer>();
+        //MeshRenderer rend = gameObject.GetComponent<MeshRenderer>();
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
         mesh.vertices = new Vector3[] { a, b, c };
@@ -25,6 +25,7 @@ public class FaceScript : MonoBehaviour
             0, 1, 2,
             0, 2, 1,
         };
+        //rend.enabled = true;
         Sphere = GameObject.Find("Sphere").GetComponent<SphereScript>();
     }
 
