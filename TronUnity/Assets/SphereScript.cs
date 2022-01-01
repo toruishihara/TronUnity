@@ -316,13 +316,9 @@ public class SphereScript : MonoBehaviour
 
     private void addCylinder(Vector3 p1, Vector3 p2)
     {
-        float w = 0.01f;
-        float len = Vector3.Distance(p1, p2);
-        Vector3 offset = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
-        Vector3 p12 = new Vector3(0.5f * (p1.x + p2.x), 0.5f * (p1.y + p2.y), 0.5f * (p1.z + p2.z));
-        GameObject cylinder = Instantiate(CylinderPrefab, p12, Quaternion.identity);
-        cylinder.transform.up = offset;
-        cylinder.transform.localScale = new Vector3(w, len/2.0f, w);
-        CylinderList.Add(cylinder);
+        GameObject obj = Instantiate(CylinderPrefab, Vector3.zero, Quaternion.identity);
+        CylinderScript cyl = obj.GetComponent<CylinderScript>();
+        cyl.SetStartEnd(p1, p2);
+        CylinderList.Add(obj);
     }
 }
