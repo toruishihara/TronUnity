@@ -17,7 +17,7 @@ public class FaceScript : MonoBehaviour
         positions[1] = b;
         positions[2] = c;
         gameObject.AddComponent<MeshFilter>();
-        gameObject.AddComponent<MeshRenderer>();
+        //gameObject.AddComponent<MeshRenderer>();
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
         mesh.vertices = new Vector3[] { a, b, c };

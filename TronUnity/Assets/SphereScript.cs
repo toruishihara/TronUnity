@@ -5,13 +5,14 @@ using UnityEngine;
 public class SphereScript : MonoBehaviour
 {
     public float alpha = .1f;
+    public int TotalTrons = 32;
     public GameObject TronPrefab;
     public GameObject FacePrefab;
     public GameObject CylinderPrefab;
     public List<GameObject> TronList = new List<GameObject>();
     public List<GameObject> FaceList = new List<GameObject>();
     public List<GameObject> CylinderList = new List<GameObject>();
-    public const float CoulombK = 0.002f;
+    public const float CoulombK = 0.004f;
     public Vector3 PoleX = new Vector3(1f, 0, 0);
     public Vector3 PoleY = new Vector3(0, 1f, 0);
     public Vector3 PoleZ = new Vector3(0, 0, 1f);
@@ -41,6 +42,7 @@ public class SphereScript : MonoBehaviour
         float t = Time.realtimeSinceStartup;
         Debug.Log("Sph start t=" + t);
         Random.InitState(0);
+        TotalTrons = 32;
     }
 
     // Update is called once per frame
@@ -101,7 +103,7 @@ public class SphereScript : MonoBehaviour
             if (sec > 10 && sec % 2 == 1)
             {
                 //Debug.Log("Every 10 Sec cnt=" + cnt + " new FPS=" + FPS);
-                if (tronCnt < 12)
+                if (tronCnt < TotalTrons)
                 {
                     AddTron(false);
                 }
@@ -133,7 +135,7 @@ public class SphereScript : MonoBehaviour
         float angle = 180f * rad / Mathf.PI;
         RotateTarget.Normalize();
         RotateStep = 1;
-        RotateTotalSteps = (int)(angle * FPS / 10.0f); // 2.5 degree / sec
+        RotateTotalSteps = (int)(angle * FPS / 20.0f); // 2.5 degree / sec
         float dotY = Mathf.Abs(Vector3.Dot(PoleY, RotateTarget));
         float dotZ = Mathf.Abs(Vector3.Dot(PoleZ, RotateTarget));
         Debug.Log("SetPoleXMove=" + p + " dot=" + dot + " angle=" + angle + " dotY=" + dotY + " dotZ=" + dotZ);
@@ -282,7 +284,7 @@ public class SphereScript : MonoBehaviour
             {
                 Vector3 p1 = FacePoints[j];
                 float dis01 = Vector3.Distance(p0, p1);
-                if (dis01 < 1.1*near0)
+                if (dis01 < 1.5*near0)
                 {
                     Debug.DrawLine(Vector3.zero, p0, Color.blue, 2f);
                     Debug.DrawLine(Vector3.zero, p1, Color.green, 1f);
@@ -291,7 +293,7 @@ public class SphereScript : MonoBehaviour
                         Vector3 p2 = FacePoints[k];
                         float dis02 = Vector3.Distance(p0, p2);
                         float dis12 = Vector3.Distance(p1, p2);
-                        if (dis02 < 1.1*near0 && dis12 < 1.1*near1)
+                        if (dis02 < 1.5*near0 && dis12 < 1.5*near1)
                         {
                             GameObject f = Instantiate(FacePrefab, Vector3.zero, Quaternion.identity);
                             FaceScript face = f.GetComponent<FaceScript>();
