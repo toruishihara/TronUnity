@@ -7,6 +7,7 @@ MonoImporter:
   - TronPrefab: {fileID: 8883804437377092314, guid: d648ed38ed6b842b4986ab12005e021b, type: 3}
   - FacePrefab: {fileID: 635458763691917926, guid: faee730def80742b7896fc2def38e143, type: 3}
   - CylinderPrefab: {fileID: 2941818375954379681, guid: 8075a4a227a19488eb69febc8d1d1643, type: 3}
+  - SpikePrefab: {fileID: 7724936698923522301, guid: 6503c96dcf2c54ddd9bec799d10a9c49, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

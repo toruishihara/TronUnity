@@ -31,6 +31,10 @@ public class TronScript : MonoBehaviour
             Position.Normalize();
             Vector3 dp = GetDisplayPosition();
             this.transform.position = dp;
+
+            // Spike case only, hide if insdie
+            MeshRenderer mr = this.GetComponent<MeshRenderer>();
+            mr.enabled = false;
         }
         else
         {

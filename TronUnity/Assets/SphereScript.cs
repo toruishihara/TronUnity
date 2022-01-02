@@ -9,9 +9,11 @@ public class SphereScript : MonoBehaviour
     public GameObject TronPrefab;
     public GameObject FacePrefab;
     public GameObject CylinderPrefab;
+    public GameObject SpikePrefab;
     public List<GameObject> TronList = new List<GameObject>();
     public List<GameObject> FaceList = new List<GameObject>();
     public List<GameObject> CylinderList = new List<GameObject>();
+    public List<GameObject> SpikeList = new List<GameObject>();
     public const float CoulombK = 0.004f;
     public Vector3 PoleX = new Vector3(1f, 0, 0);
     public Vector3 PoleY = new Vector3(0, 1f, 0);
@@ -84,7 +86,8 @@ public class SphereScript : MonoBehaviour
                 Vector3 nextTarget = RotateTarget + d;
 
                 ResetToPole();
-                FaceWork();
+                //FaceWork();
+                SpikeWork();
                 RotateTarget = nextTarget;
                 RotateStep = 1;
             }
@@ -116,7 +119,8 @@ public class SphereScript : MonoBehaviour
             {
                 //Utils.drawTronLine(TronList);
                 ResetToPole();
-                FaceWork();
+                //FaceWork();
+                SpikeWork();
                 Vector3 p2 = new Vector3(0.5f, Random.Range(-1f, 1f), Random.Range(-1f, 1f));
                 p2.Normalize();
                 SetPoleXMove(p2);
@@ -246,7 +250,6 @@ public class SphereScript : MonoBehaviour
             Destroy(CylinderList[i]);
         }
         CylinderList.Clear();
-
         FacePoints = Utils.GetFacePoints(TronList);
         // calc Tron - FacePoint nearest distance
         for (int i = 0; i < FacePoints.Count; ++i)
@@ -311,11 +314,20 @@ public class SphereScript : MonoBehaviour
         }
     }
 
-    private void FaceWork2()
+    private void SpikeWork()
     {
-        GameObject f0 = Instantiate(FacePrefab, Vector3.zero, Quaternion.identity);
-        FaceScript face0 = f0.GetComponent<FaceScript>();
-        face0.SetPoints(new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1));
+        for (int i = 0; i < SpikeList.Count; ++i)
+        {
+            Destroy(SpikeList[i]);
+        }
+        SpikeList.Clear();
+        for (int i = 0; i < TronList.Count; ++i)
+        {
+            GameObject obj = Instantiate(SpikePrefab, Vector3.zero, Quaternion.identity);
+            SpikeScript spike = obj.GetComponent<SpikeScript>();
+            spike.Set(TronList[i].GetComponent<TronScript>(), 8, 0.015f, 0.3f);
+            SpikeList.Add(obj);
+        }
     }
 
     private void addCylinder(Vector3 p1, Vector3 p2)

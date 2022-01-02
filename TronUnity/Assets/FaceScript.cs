@@ -16,8 +16,9 @@ public class FaceScript : MonoBehaviour
         positions[0] = a;
         positions[1] = b;
         positions[2] = c;
+
         gameObject.AddComponent<MeshFilter>();
-        //MeshRenderer rend = gameObject.GetComponent<MeshRenderer>();
+        gameObject.AddComponent<MeshRenderer>();
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
         mesh.vertices = new Vector3[] { a, b, c };
@@ -38,6 +39,7 @@ public class FaceScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (positions == null) { return; }
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         Vector3[] vertices = mesh.vertices;
         for (int i=0;i<3;++i)
